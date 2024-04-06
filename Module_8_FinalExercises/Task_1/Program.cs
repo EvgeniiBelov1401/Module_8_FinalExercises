@@ -10,11 +10,11 @@
             string dirPath = @"D:\Programming\Skillfactory\C#_projects\Module_8_FinalExercises\Module_8_FinalExercises\Task_1\FolderForTask1\TestFolder"; 
             
             DirectoryInfo directory = new DirectoryInfo(dirPath);
-            DeleteInFolder(directory,dirPath,minutes);
+            DeleteInFolder(directory,minutes);
     
         }
 
-        static void DeleteInFolder(DirectoryInfo directory,string dirPath,int minutes)
+        static void DeleteInFolder(DirectoryInfo directory,int minutes)
         {
             if (directory.Exists)
             {
