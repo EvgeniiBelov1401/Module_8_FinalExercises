@@ -21,7 +21,7 @@
             {
                 long deletedSize = DirectoryAndFileSize(directory, ref fileCount);
                 DeleteInFolder(directory);
-                Console.WriteLine($"Освобождено: {deletedSize} байт. Удалено {deletedFileCount} файлов");
+                Console.WriteLine($"Освобождено: {deletedSize} байт. Удалено: {deletedFileCount} файлов");
                 DirectorySize(directory, "Текущий размер папки: ", ref fileCount);
             }
             else 
