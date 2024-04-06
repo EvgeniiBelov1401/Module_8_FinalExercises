@@ -11,47 +11,44 @@
         static void Main(string[] args)
         {
             string dirPath = @"D:\Programming\Skillfactory\C#_projects\Module_8_FinalExercises\Module_8_FinalExercises\Task_3\FolderForTask3\TestFolder";
+            int fileCount = 0;
             DirectoryInfo directory = new DirectoryInfo(dirPath);
 
-            DirectorySize(directory,"Исходный размер папки: ");
+            DirectorySize(directory,"Исходный размер папки: ",ref fileCount);
+            int deletedFileCount=fileCount;
+            
             if (directory.Exists)
             {
-
+                long deletedSize = DirectoryAndFileSize(directory, ref fileCount);
+                DeleteInFolder(directory);
+                Console.WriteLine($"Освобождено: {deletedSize} байт. Удалено {deletedFileCount} файлов");
+                DirectorySize(directory, "Текущий размер папки: ", ref fileCount);
             }
             else 
             {
-                Console.WriteLine("Папки не существует и удаление невозможно");
+                Console.WriteLine("Удаление невозможно");
             }
 
             
         }
-        static void DeleteInFolder(DirectoryInfo directory, string dirPath)
+        static void DeleteInFolder(DirectoryInfo directory)
         {
-            if (directory.Exists)
-            {
-               
+
                     foreach (FileInfo file in directory.GetFiles())
                     {
                         file.Delete();
-                    }
-                    Console.WriteLine("Все файлы удалены");
+                    }          
                     foreach (DirectoryInfo dir in directory.GetDirectories())
                     {
                         dir.Delete(true);
-                    }
-                    Console.WriteLine("Все папки удалены");                
-            }
-            else
-            {
-                Console.WriteLine("Папки не существует");
-            }
+                    }                   
         }
-        static void DirectorySize(DirectoryInfo directory, string message)
+        static void DirectorySize(DirectoryInfo directory, string message,ref int fileCount)
         {
             
             if (directory.Exists)
             {
-                Console.WriteLine($"{message}{DirectoryAndFileSize(directory)} байт");
+                Console.WriteLine($"{message}{DirectoryAndFileSize(directory,ref fileCount)} байт");
             }
             else
             {
@@ -59,16 +56,17 @@
             }
         }
 
-        static long DirectoryAndFileSize(DirectoryInfo directory)
+        static long DirectoryAndFileSize(DirectoryInfo directory,ref int fileCount)
         {
             long dirSize = 0;
             foreach (FileInfo file in directory.GetFiles())
             {
                 dirSize += file.Length;
+                fileCount++;
             }
             foreach (DirectoryInfo subDirectory in directory.GetDirectories())
             {
-                dirSize += DirectoryAndFileSize(subDirectory);
+                dirSize += DirectoryAndFileSize(subDirectory, ref fileCount);
             }
             return dirSize;
         }
