@@ -7,12 +7,18 @@
         static void Main(string[] args)
         {
             int minutes = 30;
-            string dirPath = @"D:\Programming\Skillfactory\C#_projects\Module_8_FinalExercises\Module_8_FinalExercises\Task_1\FolderForTask1\TestFolder";
+            string dirPath = @"D:\Programming\Skillfactory\C#_projects\Module_8_FinalExercises\Module_8_FinalExercises\Task_1\FolderForTask1\TestFolder"; 
+            
             DirectoryInfo directory = new DirectoryInfo(dirPath);
+            DeleteInFolder(directory,dirPath,minutes);
+    
+        }
 
+        static void DeleteInFolder(DirectoryInfo directory,string dirPath,int minutes)
+        {
             if (directory.Exists)
             {
-                if (DateTime.Now-directory.LastAccessTime>TimeSpan.FromMinutes(minutes))
+                if (DateTime.Now - directory.LastAccessTime > TimeSpan.FromMinutes(minutes))
                 {
                     foreach (FileInfo file in directory.GetFiles())
                     {
@@ -34,7 +40,6 @@
             {
                 Console.WriteLine("Папки не существует");
             }
-            
         }
     }
 }
