@@ -27,7 +27,7 @@ namespace Task_4
         static void Main(string[] args)
         {
             string filePath = @"D:\Programming\Skillfactory\C#_projects\Module_8_FinalExercises\Module_8_FinalExercises\Task_4\DataFolder\students.dat";
-            
+            string filePathForFolderStudents = @"C:\Users\evgen\OneDrive\Рабочий стол\Students";
 
             Console.WriteLine("Для записи всех студентов нажмите 'ENTER'");
             Console.ReadLine();
@@ -48,6 +48,19 @@ namespace Task_4
             {
                 Console.WriteLine($"Имя: {student.Name}\tГруппа: {student.Group}\t\tДата рождения: {student.DateOfBirth.ToString("dd.MM.yyyy")}\t Средний балл: {student.AverageScore}");
             }
+            Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine("Чтобы создать папку 'Students' нажмите 'ENTER'");
+            Console.ReadLine();
+            Console.Clear();
+            FolderStudentsCreate(filePathForFolderStudents);
+            Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine("Чтобы создать файлы групп в папке 'Students' нажмите 'ENTER'");
+            Console.ReadLine();
+            Console.Clear();
+            FilesInFolderCreate();
+            Console.ReadLine();
         }
 
         static List<Students> FillStudenstList()
@@ -119,6 +132,48 @@ namespace Task_4
                 return new List<Students>();
             }
             
+        }
+
+        static void FolderStudentsCreate(string filePathForFolderStudents)
+        {
+            DirectoryInfo dirStudents = new DirectoryInfo(filePathForFolderStudents);
+            if (!dirStudents.Exists)
+            {
+                dirStudents.Create();
+                Console.WriteLine($"Папка {dirStudents.Name} успешно создана на Рабочем столе");
+            }
+            else
+            {
+                Console.WriteLine($"Папка {dirStudents.Name} уже существует на Рабочем столе");
+            }
+        }
+
+        static void FilesInFolderCreate()
+        {
+            List <FileInfo>files = new List<FileInfo>()
+            {
+            new FileInfo(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа1.txt"),
+            new FileInfo(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа2.txt"),
+            new FileInfo(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа3.txt"),
+            };
+
+            foreach (FileInfo file in files)
+            {
+                FileCreate(file);
+            }
+
+        }
+        static void FileCreate(FileInfo file)
+        {
+            if (!file.Exists)
+            {
+                file.Create();
+                Console.WriteLine($"Файл {file.Name} успешно создан в папке Students");
+            }
+            else
+            {
+                Console.WriteLine($"Файл {file.Name} уже существует в папке Students");
+            }
         }
     }
 }
