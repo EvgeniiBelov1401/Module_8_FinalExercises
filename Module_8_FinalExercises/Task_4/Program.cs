@@ -26,6 +26,7 @@ namespace Task_4
 
         static void Main(string[] args)
         {
+            List<FileInfo> files = new List<FileInfo>();
             string filePath = @"D:\Programming\Skillfactory\C#_projects\Module_8_FinalExercises\Module_8_FinalExercises\Task_4\DataFolder\students.dat";
             string filePathForFolderStudents = @"C:\Users\evgen\OneDrive\Рабочий стол\Students";
 
@@ -59,12 +60,17 @@ namespace Task_4
             Console.WriteLine("Чтобы создать файлы групп в папке 'Students' нажмите 'ENTER'");
             Console.ReadLine();
             Console.Clear();
-            FilesInFolderCreate();
+            FilesInFolderCreate(ref files);
             Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine("Чтобы распределить студентов по группам нажмите 'ENTER'");
+            Console.ReadLine();
+            SelectGroups(studentsToRead);
         }
 
         static List<Students> FillStudenstList()
         {
+            
             List<Students> students = new List<Students>()
             {
                 new Students{Name="Иванов Иван", Group="Группа1", DateOfBirth=new DateTime(2007,01,23), AverageScore=4.6M},
@@ -148,9 +154,9 @@ namespace Task_4
             }
         }
 
-        static void FilesInFolderCreate()
+        static void FilesInFolderCreate(ref List<FileInfo> files)
         {
-            List <FileInfo>files = new List<FileInfo>()
+            files=new List<FileInfo>()
             {
             new FileInfo(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа1.txt"),
             new FileInfo(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа2.txt"),
@@ -175,5 +181,50 @@ namespace Task_4
                 Console.WriteLine($"Файл {file.Name} уже существует в папке Students");
             }
         }
+
+        static void SelectGroups(List<Students> students)
+        {
+            foreach (var student in students)
+            {
+                if (student.Group == "Группа1")
+                {
+                    string studentInfo =$"Имя: {student.Name}\tДата рождения: {student.DateOfBirth.ToString("dd.MM.yyyy")}\tСредний балл: {student.AverageScore}\n";
+                    using (BinaryWriter bw = new BinaryWriter(new FileStream(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа1.txt", FileMode.Append,FileAccess.Write)))
+                    { 
+                            bw.Write(studentInfo);
+                            bw.Flush();
+                            bw.Close();
+
+                    }
+                    
+                }
+                else if (student.Group == "Группа2")
+                {
+                    string studentInfo = $"Имя: {student.Name}\tДата рождения: {student.DateOfBirth.ToString("dd.MM.yyyy")}\tСредний балл: {student.AverageScore}\n";
+                    using (BinaryWriter bw = new BinaryWriter(new FileStream(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа2.txt", FileMode.Append, FileAccess.Write)))
+                    {
+                        bw.Write(studentInfo);
+                        bw.Flush();
+                        bw.Close();
+                    }
+                        
+                }
+                else 
+                {
+                    string studentInfo = $"Имя: {student.Name}\tДата рождения: {student.DateOfBirth.ToString("dd.MM.yyyy")}\tСредний балл: {student.AverageScore} \n";
+                    using (BinaryWriter bw = new BinaryWriter(new FileStream(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа3.txt", FileMode.Append, FileAccess.Write)))
+                    {
+                        bw.Write(studentInfo);
+                        bw.Flush();
+                        bw.Close();
+                    }
+                        
+                }
+
+            }
+        }
+        
+
+        
     }
 }
