@@ -25,8 +25,7 @@ namespace Task_4
         */
 
         static void Main(string[] args)
-        {
-            List<FileInfo> files = new List<FileInfo>();
+        {     
             string filePath = @"D:\Programming\Skillfactory\C#_projects\Module_8_FinalExercises\Module_8_FinalExercises\Task_4\DataFolder\students.dat";
             string filePathForFolderStudents = @"C:\Users\evgen\OneDrive\Рабочий стол\Students";
 
