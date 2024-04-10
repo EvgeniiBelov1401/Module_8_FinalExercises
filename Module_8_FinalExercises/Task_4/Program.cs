@@ -43,9 +43,9 @@ namespace Task_4
             Console.ReadLine();
             Console.Clear();
 
-            List<Students> studentsToRead = ShowAllStudentsList(filePath);
+            List<Student> studentsToRead = ShowAllStudentsList(filePath);
             
-            foreach(Students student in studentsToRead)
+            foreach(Student student in studentsToRead)
             {
                 Console.WriteLine($"Имя: {student.Name}\tГруппа: {student.Group}\t\tДата рождения: {student.DateOfBirth.ToString("dd.MM.yyyy")}\t Средний балл: {student.AverageScore}");
             }
@@ -56,86 +56,82 @@ namespace Task_4
             Console.Clear();
             FolderStudentsCreate(filePathForFolderStudents);
             Console.ReadLine();
-            Console.Clear();
-            Console.WriteLine("Чтобы создать файлы групп в папке 'Students' нажмите 'ENTER'");
-            Console.ReadLine();
-            Console.Clear();
-            FilesInFolderCreate(ref files);
-            Console.ReadLine();
-            Console.Clear();
+            Console.Clear();          
             Console.WriteLine("Чтобы распределить студентов по группам нажмите 'ENTER'");
             Console.ReadLine();
             SelectGroups(studentsToRead);
+            Console.Clear();
+            Console.WriteLine("Все студенты успешно распределены по группам");
+            Console.ReadLine();
         }
 
-        static List<Students> FillStudenstList()
+        static List<Student> FillStudenstList()
         {
             
-            List<Students> students = new List<Students>()
+            List<Student> students = new List<Student>()
             {
-                new Students{Name="Иванов Иван", Group="Группа1", DateOfBirth=new DateTime(2007,01,23), AverageScore=4.6M},
-                new Students{Name="Олег Олегов", Group="Группа2", DateOfBirth=new DateTime(2006,05,15), AverageScore=3.1M},
-                new Students{Name="Игорь Игорев", Group="Группа3", DateOfBirth=new DateTime(2006,10,01), AverageScore=3.9M},
-                new Students{Name="Алена Аленова", Group="Группа1", DateOfBirth=new DateTime(2007,12,14), AverageScore=4.1M},
-                new Students{Name="Ирина Иринова", Group="Группа2", DateOfBirth=new DateTime(2006,04,21), AverageScore=3.2M},
-                new Students{Name="Анна Аннова", Group="Группа3", DateOfBirth=new DateTime(2007,02,03), AverageScore=4.0M},
-                new Students{Name="Николай Николаев", Group="Группа1", DateOfBirth=new DateTime(2006,07,18), AverageScore=4.9M},
-                new Students{Name="Надежда Надеждина", Group="Группа2", DateOfBirth=new DateTime(2007,11,27), AverageScore=3.4M},
-                new Students{Name="Алексей Алексеев", Group="Группа3", DateOfBirth=new DateTime(2007,08,01), AverageScore=3.3M},
+                new Student{Name="Иванов Иван", Group="Группа1", DateOfBirth=new DateTime(2007,01,23), AverageScore=4.6M},
+                new Student{Name="Олег Олегов", Group="Группа2", DateOfBirth=new DateTime(2006,05,15), AverageScore=3.1M},
+                new Student{Name="Игорь Игорев", Group="Группа3", DateOfBirth=new DateTime(2006,10,01), AverageScore=3.9M},
+                new Student{Name="Алена Аленова", Group="Группа1", DateOfBirth=new DateTime(2007,12,14), AverageScore=4.1M},
+                new Student{Name="Ирина Иринова", Group="Группа2", DateOfBirth=new DateTime(2006,04,21), AverageScore=3.2M},
+                new Student{Name="Анна Аннова", Group="Группа3", DateOfBirth=new DateTime(2007,02,03), AverageScore=4.0M},
+                new Student{Name="Николай Николаев", Group="Группа1", DateOfBirth=new DateTime(2006,07,18), AverageScore=4.9M},
+                new Student{Name="Надежда Надеждина", Group="Группа2", DateOfBirth=new DateTime(2007,11,27), AverageScore=3.4M},
+                new Student{Name="Алексей Алексеев", Group="Группа3", DateOfBirth=new DateTime(2007,08,01), AverageScore=3.3M},
             };
             return students;
         }
 
-        static void WriteStudentsInFile(List<Students>students,string filePath)
+        static void WriteStudentsInFile(List<Student>students,string filePath)
         {
-            using FileStream fs = new FileStream(filePath, FileMode.Create);
-            using BinaryWriter bw = new BinaryWriter(fs);
-
-            foreach (Students student in students)
+            using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
             {
-                bw.Write(student.Name);
-                bw.Write(student.Group);
-                bw.Write(student.DateOfBirth.ToBinary());
-                bw.Write(student.AverageScore);
-            }
-            bw.Flush();
-            bw.Close();
-            fs.Close();
+                using (BinaryWriter bw = new BinaryWriter(fs))
+                {
+                    bw.Write(students.Count);
 
+                    foreach (Student student in students)
+                    {
+                        bw.Write(student.Name);
+                        bw.Write(student.Group);
+                        bw.Write(student.DateOfBirth.ToBinary());
+                        bw.Write(student.AverageScore);
+                    }
+                }
+            }
         }
 
-        static List<Students> ShowAllStudentsList(string filePath)
+        static List<Student> ShowAllStudentsList(string filePath)
         {
             if (File.Exists(filePath))
             {
-                List<Students> result = new();
-                using FileStream fs = new FileStream(filePath, FileMode.Open);
-                using StreamReader sr = new StreamReader(fs);
+                List<Student> result = new();
 
-                Console.WriteLine(sr.ReadToEnd());
-
-                fs.Position = 0;
-
-                BinaryReader br = new BinaryReader(fs);
-
-                while (fs.Position < fs.Length)
+                using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
-                    Students student = new Students();
-                    student.Name = br.ReadString();
-                    student.Group = br.ReadString();
-                    long dt = br.ReadInt64();
-                    student.DateOfBirth = DateTime.FromBinary(dt);
-                    student.AverageScore = br.ReadDecimal();
+                    using (BinaryReader binaryReader = new BinaryReader(fs))
+                    {
+                        int count = binaryReader.ReadInt32();
 
-                    result.Add(student);
+                        for (int i = 0; i < count; i++)
+                        {
+                            Student student = new Student();
+                            student.Name = binaryReader.ReadString();
+                            student.Group = binaryReader.ReadString();
+                            student.DateOfBirth = DateTime.FromBinary(binaryReader.ReadInt64());
+                            student.AverageScore = binaryReader.ReadDecimal();
+
+                            result.Add(student);
+                        } 
+                    }
                 }
-
-                fs.Close();
+                   
                 return result;
             }
             else
             {
-                return new List<Students>();
+                return new List<Student>();
             }
             
         }
@@ -143,6 +139,7 @@ namespace Task_4
         static void FolderStudentsCreate(string filePathForFolderStudents)
         {
             DirectoryInfo dirStudents = new DirectoryInfo(filePathForFolderStudents);
+
             if (!dirStudents.Exists)
             {
                 dirStudents.Create();
@@ -182,49 +179,27 @@ namespace Task_4
             }
         }
 
-        static void SelectGroups(List<Students> students)
+        static void WriteToFile(string group, List<Student> students)
         {
-            foreach (var student in students)
+            using (FileStream fileStream = new FileStream($"C:\\Users\\evgen\\OneDrive\\Рабочий стол\\Students\\{group}.txt", FileMode.Create, FileAccess.Write))
             {
-                if (student.Group == "Группа1")
+                using (BinaryWriter binaryWriter = new BinaryWriter(fileStream))
                 {
-                    string studentInfo =$"Имя: {student.Name}\tДата рождения: {student.DateOfBirth.ToString("dd.MM.yyyy")}\tСредний балл: {student.AverageScore}\n";
-                    using (BinaryWriter bw = new BinaryWriter(new FileStream(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа1.txt", FileMode.Append,FileAccess.Write)))
-                    { 
-                            bw.Write(studentInfo);
-                            bw.Flush();
-                            bw.Close();
-
-                    }
                     
-                }
-                else if (student.Group == "Группа2")
-                {
-                    string studentInfo = $"Имя: {student.Name}\tДата рождения: {student.DateOfBirth.ToString("dd.MM.yyyy")}\tСредний балл: {student.AverageScore}\n";
-                    using (BinaryWriter bw = new BinaryWriter(new FileStream(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа2.txt", FileMode.Append, FileAccess.Write)))
+                    foreach (var student in students.Where(student => student.Group == group))
                     {
-                        bw.Write(studentInfo);
-                        bw.Flush();
-                        bw.Close();
+                        string studentInfo = $"Имя: {student.Name}\t\t\tДата рождения: {student.DateOfBirth.ToString("dd.MM.yyyy")}\t\t\tСредний балл: {student.AverageScore}\n";
+                        binaryWriter.Write(studentInfo);
                     }
-                        
                 }
-                else 
-                {
-                    string studentInfo = $"Имя: {student.Name}\tДата рождения: {student.DateOfBirth.ToString("dd.MM.yyyy")}\tСредний балл: {student.AverageScore} \n";
-                    using (BinaryWriter bw = new BinaryWriter(new FileStream(@"C:\Users\evgen\OneDrive\Рабочий стол\Students\Группа3.txt", FileMode.Append, FileAccess.Write)))
-                    {
-                        bw.Write(studentInfo);
-                        bw.Flush();
-                        bw.Close();
-                    }
-                        
-                }
-
             }
         }
-        
 
-        
+        static void SelectGroups(List<Student> students)
+        {
+            WriteToFile("Группа1", students);
+            WriteToFile("Группа2", students);
+            WriteToFile("Группа3", students);
+        }     
     }
 }

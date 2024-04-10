@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Task_4.Modules
 {
  
-    internal class Students
+    internal class Student
     {
         public string Name { get; set; }
         public string Group { get; set; }
